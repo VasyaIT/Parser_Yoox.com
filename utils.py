@@ -45,10 +45,10 @@ def get_insert_data(soup: BeautifulSoup, gender: str) -> Dict[str, str | int | S
                         .find('a').text.strip())
     data['description'] = (soup.find('div', class_='Details_details__0Zm5h')
                            .find(class_='MuiBody1-body1 MuiBody1-wide').text.strip())
-    data['price'] = int(
+    data['price'] = (
         (soup.find('div', class_='MuiTitle4-title4 ItemInfo_currentPrice__n4v78')
-         .find_next().find_next().text
-         .replace("\xa0", '').replace('руб', '').strip()))
+         .find_next().find_next().text.split('$')[1].strip())
+    )
     data['colors'] = [
         color.get('title').strip()
         for color in soup.find_all('div', class_='ColorPicker_color-sample__IyQPv')
