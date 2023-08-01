@@ -1,5 +1,3 @@
-import asyncio
-
 from celery import Celery
 from celery.schedules import crontab
 
@@ -11,7 +9,7 @@ app = Celery('yoox', broker=f'redis://{REDIS_HOST}:{REDIS_PORT}')
 
 @app.task()
 def startup(launch: int):
-    asyncio.run(main(launch))
+    main(launch)
 
 
 app.conf.beat_schedule = {

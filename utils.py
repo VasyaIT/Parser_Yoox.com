@@ -1,6 +1,6 @@
 import csv
 import json
-from typing import Any, Iterable, Sequence, Dict, List
+from typing import Any, Iterable, Dict, List
 
 from bs4 import BeautifulSoup
 from fake_useragent import FakeUserAgent
@@ -9,7 +9,7 @@ from config import GenderTypes
 
 # fua = FakeUserAgent().random
 
-ALL_LINKS = List[Dict[GenderTypes, List[str]]]
+ALL_LINKS = List[Dict[GenderTypes, Dict[str, List[str]]]]
 
 HEADERS = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,'
@@ -34,7 +34,9 @@ def write_in_csv(file: str, data: Iterable[Any]) -> None:
         writer.writerow(data)
 
 
-def get_insert_data(soup: BeautifulSoup, gender: str) -> Dict[str, str | int | Sequence[str]]:
+def get_insert_data(
+        soup: BeautifulSoup, gender: str, sizes: List[str]
+) -> Dict[str, str | List[str]]:
     data = dict()
 
     product_id = (soup.find('div', class_='Details_code10__1V6sY')
@@ -53,11 +55,7 @@ def get_insert_data(soup: BeautifulSoup, gender: str) -> Dict[str, str | int | S
         color.get('title').strip()
         for color in soup.find_all('div', class_='ColorPicker_color-sample__IyQPv')
     ]
-    data['sizes'] = [
-        size.text.strip()
-        for size in soup.find_all('span', class_='MuiBody1-body1 SizePicker_size-title__0ILZs')
-    ]
-
+    data['sizes'] = sizes
     data['images'] = [
         image.find('img').get('src')
         for image in soup.find('div', class_='jss1').find_all(class_='jss1')
